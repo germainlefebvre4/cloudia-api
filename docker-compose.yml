@@ -1,0 +1,57 @@
+version: "3.8"
+
+name: cloud-explorer-portal
+
+services:
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: cep
+      POSTGRES_USER: cep
+      POSTGRES_PASSWORD: cep
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cep"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+
+  # db_test:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: cep_test
+  #     POSTGRES_USER: cep_test
+  #     POSTGRES_PASSWORD: cep_test
+  #   ports:
+  #     - "5433:5432"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U cep_test"]
+  #     interval: 5s
+  #     timeout: 2s
+  #     retries: 10
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@cep.fr
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - "5050:80"
+
+  # api:
+  #   image: germain/cep-api:latest
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - "8080:8080"
+  #   env_file:
+  #     - .env.docker
+  #   volumes:
+  #     - .:/code

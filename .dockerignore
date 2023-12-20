@@ -1,0 +1,8 @@
+/doc/
+/docs/
+/scripts/
+/.git/
+/.github/
+/.gitlab/
+/.gitignore
+/.gitlab-ci.yml

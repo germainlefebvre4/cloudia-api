@@ -1,0 +1,12 @@
+.mypy_cache
+.coverage
+htmlcov
+*.svg
+*.png
+/.env*
+/!.env.template
+/!.env.test
+/.secrets
+__pycache__/
+
+/service-account-key-file.json
