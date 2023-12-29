@@ -7,10 +7,10 @@ from app.db.base_class import Base
 from app.core.config import settings
 
 
-class Location(Base):
+class Setting(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=False)
-    key = Column(Integer, unique=True, index=True, nullable=False)
-    kind = Column(Integer, nullable=False)
-    country = Column(String)
-    label = Column(String, nullable=False)
-    additional = Column(String)
+    key = Column(String, unique=True, index=True, nullable=False)
+    value = Column(String, nullable=False)
+    type = Column(String, nullable=False)
+    category = Column(String)
+    description = Column(String, nullable=False)

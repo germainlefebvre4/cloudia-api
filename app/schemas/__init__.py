@@ -2,5 +2,5 @@
 from .msg import Msg
 from .token import Token, TokenPayload
 from .user import User, UserCreate, UserInDB, UserUpdate
-from .location import Location, LocationCreate, LocationInDB, LocationUpdate
+from .setting import Setting, SettingCreate, SettingInDB, SettingUpdate
 from .cloud_project import CloudProject
