@@ -40,5 +40,6 @@ poetry run uvicorn app.main:app --port=8080 --reload
 ## Docker
 
 ```bash
+poetry export -f requirements.txt --output requirements.txt --without-hashes
 docker build -t cloudia-api:latest .
 ```

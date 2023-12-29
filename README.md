@@ -1,5 +1,15 @@
 # Cloudia - API
 
+This repository contains the API application for the Cloudia project.
+
+---
+
+Project overview: [https://github.com/germainlefebvre4/cloudia-project](https://github.com/germainlefebvre4/cloudia-project)
+
+Documentation: [https://cloudia.readthedocs.io/](https://cloudia.readthedocs.io/)
+
+---
+
 ## Getting started
 
 Install required packages:

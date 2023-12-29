@@ -9,4 +9,4 @@ htmlcov
 /.secrets
 __pycache__/
 
-/service-account-key-file.json
+/gcp_service-account_key-file.json
