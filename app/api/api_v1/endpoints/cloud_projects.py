@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
 from app.api import deps
-from app.api.api_v1.helpers.aws import aws_list_accounts
-from app.api.api_v1.helpers.gcp import gcp_list_projects
+from app.api.api_v1.technical.aws import list_aws_projects, list_aws_project_tags
+from app.api.api_v1.technical.gcp import list_gcp_projects, list_gcp_project_tags
 
 router = APIRouter()
 
@@ -32,14 +32,20 @@ async def get_aws_projects() -> Any:
 
 
 # AWS
-@router.get("/providers/aws/projects", response_model=List[schemas.CloudProject])
+# @router.get("/providers/aws/projects", response_model=List[schemas.CloudProject])
+@router.get("/providers/aws/projects")
 async def get_aws_projects(
     redis_c = Depends(deps.get_redis),
 ) -> Any:
-    # redis_c.get("cloud:aws:projects")
-    acccounts = aws_list_accounts(redis_c)
-    # redis_c.set("cloud:aws:projects", json.dumps(acccounts.toJSON()))
-    return acccounts
+    projects = list_aws_projects(redis_c)
+    return projects
+
+@router.get("/providers/aws/projects/tags", response_model=List[Any])
+async def get_aws_projects(
+    redis_c = Depends(deps.get_redis),
+) -> Any:
+    projects = list_aws_project_tags(redis_c)
+    return projects
 
 @router.post("/providers/aws/projects")
 async def create_aws_project() -> Any:
@@ -51,7 +57,14 @@ async def create_aws_project() -> Any:
 async def get_google_projects(
     redis_c = Depends(deps.get_redis),
 ) -> Any:
-    projects = gcp_list_projects(redis_c)
+    projects = list_gcp_projects(redis_c)
+    return projects
+
+@router.get("/providers/gcp/projects/tags", response_model=List[Any])
+async def get_google_projects(
+    redis_c = Depends(deps.get_redis),
+) -> Any:
+    projects = list_gcp_project_tags(redis_c)
     return projects
 
 @router.post("/providers/gcp/projects")

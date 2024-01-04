@@ -1,13 +1,8 @@
 from datetime import datetime
-import json
-import logging
 
 from google.cloud import resourcemanager_v3
 from google.oauth2 import service_account
 
-from fastapi import Depends
-
-from app.api import deps
 from app import schemas
 from app.core.config import settings
 
@@ -45,45 +40,30 @@ def search_projects(folder_id):
     return search_result
 
 
-def gcp_list_projects(
-    redis_c = Depends(deps.get_redis),
-):
+def gcp_list_projects() -> list[schemas.CloudProject]:
     active_project = []
-    if redis_c.exists(f"cloud:gcp:projects") == 0:
-        logging.debug("non-cached")
-        for projects in search_projects(f"organizations/{settings.GCP_ORGANIZATION_ID}"):
+
+    for projects in search_projects(f"organizations/{settings.GCP_ORGANIZATION_ID}"):
+        data = schemas.CloudProject(
+            id=projects.name.split("/")[-1],
+            name=projects.display_name,
+            parent=projects.parent,
+            tags=projects.labels,
+            state=str(projects.state).split(".")[1],
+            created_at=datetime.fromtimestamp(projects.create_time.timestamp()),
+        )
+        active_project.append(data)
+
+    for folders in get_folders(parent_id=f"organizations/{settings.GCP_ORGANIZATION_ID}", folders=None):
+        for projects in search_projects(folders):
             data = schemas.CloudProject(
-                id=projects.name.split("/")[-1],
+                id=projects.name.split("/")[1],
                 name=projects.display_name,
                 parent=projects.parent,
                 tags=projects.labels,
                 state=str(projects.state).split(".")[1],
                 created_at=datetime.fromtimestamp(projects.create_time.timestamp()),
             )
-            active_project.append(data)
-
-        for folders in get_folders(parent_id=f"organizations/{settings.GCP_ORGANIZATION_ID}", folders=None):
-            for projects in search_projects(folders):
-                data = schemas.CloudProject(
-                    id=projects.name.split("/")[1],
-                    name=projects.display_name,
-                    parent=projects.parent,
-                    tags=projects.labels,
-                    state=str(projects.state).split(".")[1],
-                    created_at=datetime.fromtimestamp(projects.create_time.timestamp()),
-                )
-                active_project.append(data)
-
-        redis_c.set(
-            f"cloud:gcp:projects",
-            json.dumps([project.json() for project in active_project]),
-            ex=60*60*24,
-        )
-    else:
-        logging.debug("cached")
-        projects = json.loads(redis_c.get(f"cloud:gcp:projects"))
-        for project in projects:
-            data = schemas.CloudProject(**json.loads(project))
             active_project.append(data)
 
     return active_project
