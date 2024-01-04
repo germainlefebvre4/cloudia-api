@@ -30,6 +30,8 @@ google-api-python-client = "^2.111.0"
 google-cloud-resource-manager = "^1.11.0"
 gcloud = "^0.18.3"
 urllib3 = ">=1.25.4,<1.27"
+aioredis = "^2.0.1"
+redis = "^5.0.1"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.770"

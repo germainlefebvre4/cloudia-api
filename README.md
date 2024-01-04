@@ -20,10 +20,11 @@ sudo apt install python3-pip python3-dev
 pip install poetry
 ```
 
-Setup the database:
+Setup the databases:
 
 ```bash
-docker compose up -d db
+docker compose up -d db redis
+docker compose restart redis
 ```
 
 Run the app:
@@ -60,7 +61,8 @@ poetry install
 This section use docker database called `cloudia`.
 
 ```bash
-docker compose up -d db
+docker compose up -d db redis
+docker compose restart redis
 poetry run alembic upgrade head
 poetry run python app/initial_data.py
 poetry run uvicorn app.main:app --port=8080 --reload
@@ -71,6 +73,7 @@ poetry run uvicorn app.main:app --port=8080 --reload
 This section use docker database called `cloudia_test`.
 
 ```bash
-docker compose up -d db_test
+docker compose up -d db_test redis_test
+docker compose restart redis_test
 poetry run pytest -sv app/tests/
 ```

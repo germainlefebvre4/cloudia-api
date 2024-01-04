@@ -42,9 +42,9 @@ class Settings(BaseSettings):
 
     POSTGRES_SERVER: str = os.getenv("POSTGRES_USER", "localhost")
     POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", "5432")
-    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "cep")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_USER", "cep")
-    POSTGRES_DB: str = os.getenv("POSTGRES_USER", "cep")
+    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "cloudia")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_USER", "cloudia")
+    POSTGRES_DB: str = os.getenv("POSTGRES_USER", "cloudia")
     SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
 
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)
@@ -59,6 +59,11 @@ class Settings(BaseSettings):
             port=values.get("POSTGRES_PORT"),
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
+    
+    REDIS_SERVER: str = os.getenv("REDIS_SERVER", "localhost")
+    REDIS_PORT: str = os.getenv("REDIS_PORT", "6379")
+    # REDIS_DB: str = os.getenv("REDIS_DB", "0")
+    # REDIS_PASSWORD: str = os.getenv("REDIS_PASSWORD", "cloudia")
 
     SMTP_TLS: bool = True
     SMTP_PORT: Optional[int] = None

@@ -2,8 +2,11 @@ version: "3.8"
 
 name: cloudia
 
-services:
+volumes:
+  redis:
+  redis-config:
 
+services:
   db:
     image: postgres:15
     environment:
@@ -17,6 +20,18 @@ services:
       interval: 5s
       timeout: 2s
       retries: 10
+  redis:
+    image: bitnami/redis:7.2
+    command: redis-server --protected-mode no
+    environment:
+      REDIS_PORT_NUMBER: 6379
+      # REDIS_PASSWORD: cloudia
+      ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - redis:/var/lib/redis
+      - redis-config:/usr/local/etc/redis/redis.conf
+    ports:
+      - 6379:6379
 
   # db_test:
   #   image: postgres:15
@@ -31,6 +46,18 @@ services:
   #     interval: 5s
   #     timeout: 2s
   #     retries: 10
+  # redis_test:
+  #   image: bitnami/redis:7.2
+  #   command: redis-server --protected-mode no
+  #   environment:
+  #     REDIS_PORT_NUMBER: 6379
+  #     # REDIS_PASSWORD: cloudia_test
+  #     ALLOW_EMPTY_PASSWORD: "yes"
+  #   volumes:
+  #     - redis:/var/lib/redis
+  #     - redis-config:/usr/local/etc/redis/redis.conf
+  #   ports:
+  #     - 6380:6379
 
   # pgadmin:
   #   image: dpage/pgadmin4
@@ -41,17 +68,3 @@ services:
   #     - db
   #   ports:
   #     - "5050:80"
-
-  # api:
-  #   image: germain/cloudia-api:latest
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - db
-  #   ports:
-  #     - "8080:8080"
-  #   env_file:
-  #     - .env.docker
-  #   volumes:
-  #     - .:/code

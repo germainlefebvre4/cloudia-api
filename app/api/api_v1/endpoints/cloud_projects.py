@@ -1,26 +1,26 @@
 from typing import Any, List
+import json
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
 from app.api import deps
-from app.api.api_v1.endpoints.utils import aws_list_accounts, gcp_list_projects
+from app.api.api_v1.helpers.aws import aws_list_accounts
+from app.api.api_v1.helpers.gcp import gcp_list_projects
 
 router = APIRouter()
 
 
 # Cloud Providers
 @router.get("/providers")
-async def get_providers(
-) -> Any:
-    return {"message": "Hello World"}
+async def get_providers() -> Any:
+    return {}
 
 
 # Dummy
 @router.get("/providers/dummy/projects", response_model=List[schemas.CloudProject])
-async def get_aws_projects(
-) -> Any:
+async def get_aws_projects() -> Any:
     accounts = [
         schemas.CloudProject(id=100, name="dummy1", provider="aws", tags=[{"env": "prod", "customer": "My Company"}]),
         schemas.CloudProject(id=101, name="dummy2", provider="aws"),
@@ -30,29 +30,30 @@ async def get_aws_projects(
     ]
     return accounts
 
+
 # AWS
 @router.get("/providers/aws/projects", response_model=List[schemas.CloudProject])
 async def get_aws_projects(
+    redis_c = Depends(deps.get_redis),
 ) -> Any:
-    acccounts = aws_list_accounts()
+    # redis_c.get("cloud:aws:projects")
+    acccounts = aws_list_accounts(redis_c)
+    # redis_c.set("cloud:aws:projects", json.dumps(acccounts.toJSON()))
     return acccounts
 
 @router.post("/providers/aws/projects")
-async def create_aws_project():
-    return {"message": "Hello World"}
+async def create_aws_project() -> Any:
+    return {}
 
 
 # Google Cloud
 @router.get("/providers/gcp/projects", response_model=List[schemas.CloudProject])
 async def get_google_projects(
+    redis_c = Depends(deps.get_redis),
 ) -> Any:
-    projects = gcp_list_projects()
-    for project in projects:
-        project.tags = project.labels
-        del(project.labels)
+    projects = gcp_list_projects(redis_c)
     return projects
 
 @router.post("/providers/gcp/projects")
-async def create_google_project(
-) -> Any:
-    return {"message": "Hello World"}
+async def create_google_project() -> Any:
+    return {}

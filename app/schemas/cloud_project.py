@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Optional
 from datetime import datetime
+import json
 
 from pydantic import BaseModel, Field, EmailStr
 
@@ -23,3 +24,7 @@ class CloudProject(BaseModel):
     tags: Optional[dict] = Field(None, description="Tags attached to the Cloud project.")
 
     created_at: Optional[datetime] = Field(None, description="Createion date of the Cloud project.")
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
