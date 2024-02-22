@@ -1,0 +1,38 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version of package (e.g. 1.0.0)'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            germainlefebvre4/cloudia-api:v${{ inputs.version }}
+            germainlefebvre4/cloudia-api:latest
+
+      - name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v2
+        with:
+          repository: germainlefebvre4/cloudia-api
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          readme-filepath: ./doc/dockerhub/README.md

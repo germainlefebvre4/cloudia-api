@@ -1,0 +1,70 @@
+version: "3.8"
+
+name: cloudia
+
+volumes:
+  redis:
+  redis-config:
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: cloudia
+      POSTGRES_USER: cloudia
+      POSTGRES_PASSWORD: cloudia
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloudia"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+  redis:
+    image: bitnami/redis:7.2
+    command: redis-server --protected-mode no
+    environment:
+      REDIS_PORT_NUMBER: 6379
+      # REDIS_PASSWORD: cloudia
+      ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      # - redis:/var/lib/redis
+      - redis-config:/usr/local/etc/redis/redis.conf
+    ports:
+      - 6379:6379
+
+  # db_test:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: cloudia_test
+  #     POSTGRES_USER: cloudia_test
+  #     POSTGRES_PASSWORD: cloudia_test
+  #   ports:
+  #     - "5433:5432"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U cloudia_test"]
+  #     interval: 5s
+  #     timeout: 2s
+  #     retries: 10
+  # redis_test:
+  #   image: bitnami/redis:7.2
+  #   command: redis-server --protected-mode no
+  #   environment:
+  #     REDIS_PORT_NUMBER: 6379
+  #     # REDIS_PASSWORD: cloudia_test
+  #     ALLOW_EMPTY_PASSWORD: "yes"
+  #   volumes:
+  #     - redis:/var/lib/redis
+  #     - redis-config:/usr/local/etc/redis/redis.conf
+  #   ports:
+  #     - 6380:6379
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@cloudia.fr
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - "5050:80"

@@ -1,0 +1,11 @@
+.mypy_cache
+.coverage
+htmlcov
+*.svg
+*.png
+/.env*
+!/.env.template
+/.secrets
+__pycache__/
+
+/gcp_service-account_key-file.json
