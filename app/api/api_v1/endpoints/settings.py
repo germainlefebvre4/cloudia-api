@@ -23,7 +23,7 @@ def read_settings(
     return settings
 
 
-@router.get("/", response_model=Dict[str, str])
+@router.get("/", response_model=Any)
 def read_settings(
     db: Session = Depends(deps.get_db),
     skip: int = 0,
@@ -34,11 +34,35 @@ def read_settings(
     """
     settings = crud.setting.get_multi(db, skip=skip, limit=limit)
     # Format settings to be a dictionary
-    settings_dict = {}
-    for setting in settings:
-        settings_dict[setting.key] = eval(setting.type)(setting.value)
+    # settings_dict = {}
+    # for setting in settings:
+    #     settings_dict[setting.key] = setting.value
+    #     # settings_dict[setting.key] = eval(setting.type)(setting.value)
 
-    return settings_dict
+
+    def transform_structure(data):
+        result = {"path": "", "children": []}
+
+        for entry in data:
+            categories = entry.category.split("/")
+            current_node = result
+
+            for category in categories:
+                if not any(child["path"] == category for child in current_node["children"]):
+                    new_node = {"path": category, "children": []}
+                    current_node["children"].append(new_node)
+                    current_node = new_node
+                else:
+                    current_node = next(child for child in current_node["children"] if child["path"] == category)
+
+            current_node["key"] = entry.key
+            current_node["value"] = entry.value
+
+        return result
+
+    result = transform_structure(settings)
+
+    return result
 
 
 @router.post("/", response_model=schemas.Setting, status_code=status.HTTP_201_CREATED)

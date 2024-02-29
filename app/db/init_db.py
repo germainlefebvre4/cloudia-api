@@ -34,28 +34,57 @@ def init_db(db: Session) -> None:
 
     # Create settings
     setting_1_in = schemas.SettingCreate(
-        key="dummy",
+        key="enabled",
         value="true",
         type="bool",
-        category="cloud_providers",
+        category="Cloud Provider/Dummy",
         description='Enables Dummy Cloud Provider',
     )
     setting_1 = crud.setting.create(db, obj_in=setting_1_in)
 
     setting_2_in = schemas.SettingCreate(
-        key="aws",
+        key="enabled",
         value="true",
         type="bool",
-        category="cloud_providers",
+        category="Cloud Provider/AWS",
         description='Enables AWS Cloud Provider',
     )
     setting_2 = crud.setting.create(db, obj_in=setting_2_in)
 
     setting_3_in = schemas.SettingCreate(
-        key="gcp",
+        key="enabled",
         value="true",
         type="bool",
-        category="cloud_providers",
+        category="Cloud Provider/GCP",
         description='Enables GCP Cloud Provider',
     )
     setting_3 = crud.setting.create(db, obj_in=setting_3_in)
+
+    setting_4_in = schemas.SettingCreate(
+        key="aws_root_account_access_key_id",
+        value="xxxxxxxxxxxxxxxxxxxx",
+        type="string",
+        category="Cloud Provider/AWS/credentials/root_account",
+        description="AWS root Account Programmatic Credentials: Access Key ID",
+    )
+    setting_4 = crud.setting.create(db, obj_in=setting_4_in)
+
+    setting_5_in = schemas.SettingCreate(
+        key="aws_root_account_secret_access_key",
+        value="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        type="string",
+        category="Cloud Provider/AWS/credentials/root_account",
+        description="AWS root Account Programmatic credentials: Secret Access Key",
+    )
+    setting_5 = crud.setting.create(db, obj_in=setting_5_in)
+
+    setting_6_in = schemas.SettingCreate(
+        key="aws_root_account_region",
+        value="us-east-1",
+        type="string",
+        category="Cloud Provider/AWS/region/root_account",
+        description="AWS root Account Region",
+    )
+    setting_6 = crud.setting.create(db, obj_in=setting_6_in)
+    
+

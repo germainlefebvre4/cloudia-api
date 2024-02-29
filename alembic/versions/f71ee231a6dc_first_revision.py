@@ -23,7 +23,7 @@ def upgrade():
     op.create_table(
         'setting',
         Column('id', Integer, primary_key=True, index=True),
-        Column('key', String, unique=True, index=True),
+        Column('key', String, index=True),
         Column('value', String),
         Column('type', String),
         Column('category', String),
