@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional
+from typing import List, Optional
 from datetime import datetime
 import json
 
@@ -26,3 +26,11 @@ class CloudBillingResponse(CloudBilling):
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)
+
+class ProjectBillingForChart(BaseModel):
+    x: datetime # created_at
+    y: float # price
+
+class ProjectBillingOutputForChart(BaseModel):
+    label: str
+    data: List[ProjectBillingForChart]
