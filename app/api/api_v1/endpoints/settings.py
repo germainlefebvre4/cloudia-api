@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 @router.get("/all", response_model=List[schemas.Setting])
-def read_settings(
+def read_settings_all(
     db: Session = Depends(deps.get_db),
     skip: int = 0,
     limit: int = 100,

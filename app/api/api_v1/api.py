@@ -5,6 +5,7 @@ from app.api.api_v1.endpoints import settings
 from app.api.api_v1.endpoints import cloud_projects
 from app.api.api_v1.endpoints import billing
 from app.api.api_v1.endpoints import carbon_footprint
+from app.api.api_v1.endpoints import ccf
 
 api_router = APIRouter()
 api_router.include_router(login.router, tags=["login"])
@@ -14,3 +15,4 @@ api_router.include_router(settings.router, prefix="/settings", tags=["settings"]
 api_router.include_router(cloud_projects.router, prefix="/cloud", tags=["cloud_projects"])
 api_router.include_router(billing.router, prefix="/billing", tags=["billing"])
 api_router.include_router(carbon_footprint.router, prefix="/carbon", tags=["carbon_footprint"])
+api_router.include_router(ccf.router, prefix="/carbon/ccf", tags=["carbon_footprint", "ccf"])

@@ -114,6 +114,10 @@ class Settings(BaseSettings):
     AWS_SECRET_ACCESS_KEY: str = os.getenv("AWS_SECRET_ACCESS_KEY")
     AWS_DEFAULT_REGION: str = os.getenv("AWS_DEFAULT_REGION")
 
+
+    CCF_ENABLED: bool = os.getenv("CCF_ENABLED", False)
+    CCF_API_URL: str = os.getenv("CCF_API_URL", "http://localhost:4000/api")
+
     class Config:
         case_sensitive = True
 
