@@ -88,7 +88,7 @@ def gcp_get_project_billing(
             SUM(IFNULL((SELECT SUM(c.amount) FROM UNNEST(credits) c), 0)) as total_credits
         FROM `{settings.GCP_BILLING_EXPORT_PROJECT_ID}.{settings.GCP_BILLING_EXPORT_DATASET_NAME}.gcp_billing_export_v1_{settings.GCP_BILLING_ACCOUNT_ID}`
         WHERE
-            invoice.month = "{year}{month}" AND
+            invoice.month = "{year:04d}{month:02d}" AND
             project.number = "{project_id}"
         GROUP BY 1;
     """
@@ -125,7 +125,7 @@ def gcp_get_project_carbon_footprint(
             SUM(carbon_footprint_total_kgCO2e.location_based)
         FROM `{settings.GCP_CARBON_EXPORT_PROJECT_ID}.{settings.GCP_CARBON_EXPORT_DATASET_NAME}.carbon_footprint`
         WHERE
-            usage_month = "{year}-{month}-01" AND
+            usage_month = "{year:04d}-{month:02d}-01" AND
             project.number = "{project_id}"
         GROUP BY 1, 2;
     """

@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from app import schemas
 from app.api import deps
 from app.api.api_v1.technical.aws import get_aws_project_billing, list_aws_projects
-from app.api.api_v1.technical.gcp import get_gcp_project_billing
+from app.api.api_v1.technical.gcp import get_gcp_project_billing, list_gcp_projects
 from app.api.api_v1.technical.cache import flush_billing_cache, flush_billing_cache, flush_billing_cache
 
 router = APIRouter()
@@ -18,7 +18,7 @@ router = APIRouter()
 
 # Charts
 @router.get("/aws/projects/chart", response_model=Any)
-def read_prices_by_provider_for_chart(
+def read_aws_prices_by_provider_for_chart(
     start_year: int = 2023,
     start_month: int = 9,
     end_year: int = 2023,
@@ -33,7 +33,6 @@ def read_prices_by_provider_for_chart(
 
     chart_res = []
     for project in projects:
-        # print("project:", project.id, project)
         prices_chart = []
         for i in range(date_delta.months + 1):
             date_work = datetime.strptime(f"{start_year}-{start_month}", "%Y-%m") + relativedelta(months=i)
@@ -54,8 +53,44 @@ def read_prices_by_provider_for_chart(
     return chart_res
 
 
+@router.get("/gcp/projects/chart", response_model=Any)
+def read_gcp_prices_by_provider_for_chart(
+    start_year: int = 2023,
+    start_month: int = 9,
+    end_year: int = 2023,
+    end_month: int = 12,
+    redis_c = Depends(deps.get_redis),
+) -> Any:
+    start_date = datetime.strptime(f"{start_month}/{start_year}", "%m/%Y")
+    end_date = datetime.strptime(f"{end_month}/{end_year}", "%m/%Y")
+    date_delta = relativedelta(end_date, start_date)
+
+    projects = list_gcp_projects(redis_c)
+
+    chart_res = []
+    for project in projects:
+        prices_chart = []
+        for i in range(date_delta.months + 1):
+            date_work = datetime.strptime(f"{start_year}-{start_month}", "%Y-%m") + relativedelta(months=i)
+            billing = get_gcp_project_billing(redis_c=redis_c, project_id=project.id, year=date_work.year, month=date_work.month)
+
+            date_tmp = datetime.strptime(f"{date_work.year}-{date_work.month}", "%Y-%m")
+            if billing.total is None:
+                billing.total = 0
+            prices_chart.append({"x": date_tmp, "y": billing.total})
+
+        prices_res = schemas.ProjectBillingOutputForChart(
+            label=f"{project.name} ({project.id})",
+            data=prices_chart,
+        )
+
+        chart_res.append(prices_res)
+
+    return chart_res
+
+
 @router.get("/aws/projects/{project_id}/chart", response_model=List[schemas.ProjectBillingOutputForChart])
-def read_prices_by_provider_by_project_for_chart(
+def read_aws_prices_by_provider_by_project_for_chart(
     project_id: str,
     start_year: int = 2023,
     start_month: int = 9,
@@ -71,6 +106,35 @@ def read_prices_by_provider_by_project_for_chart(
     for i in range(date_delta.months + 1):
         date_work = datetime.strptime(f"{start_year}-{start_month}", "%Y-%m") + relativedelta(months=i)
         billing = get_aws_project_billing(redis_c=redis_c, project_id=project_id, year=date_work.year, month=date_work.month)
+
+        date_tmp = datetime.strptime(f"{date_work.year}-{date_work.month}", "%Y-%m")
+        prices_chart.append({"x": date_tmp, "y": billing.total})
+
+    prices_res = schemas.ProjectBillingOutputForChart(
+        label=project_id,
+        data=prices_chart,
+    )
+
+    return [prices_res]
+
+
+@router.get("/gcp/projects/{project_id}/chart", response_model=List[schemas.ProjectBillingOutputForChart])
+def read_gcp_prices_by_provider_by_project_for_chart(
+    project_id: str,
+    start_year: int = 2023,
+    start_month: int = 9,
+    end_year: int = 2023,
+    end_month: int = 12,
+    redis_c = Depends(deps.get_redis),
+) -> Any:
+    start_date = datetime.strptime(f"{start_month}/{start_year}", "%m/%Y")
+    end_date = datetime.strptime(f"{end_month}/{end_year}", "%m/%Y")
+    date_delta = relativedelta(end_date, start_date)
+
+    prices_chart = []
+    for i in range(date_delta.months + 1):
+        date_work = datetime.strptime(f"{start_year}-{start_month}", "%Y-%m") + relativedelta(months=i)
+        billing = get_gcp_project_billing(redis_c=redis_c, project_id=project_id, year=date_work.year, month=date_work.month)
 
         date_tmp = datetime.strptime(f"{date_work.year}-{date_work.month}", "%Y-%m")
         prices_chart.append({"x": date_tmp, "y": billing.total})
