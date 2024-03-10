@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List
 import logging
 import json
 
@@ -9,7 +9,7 @@ from app import schemas
 from app.core.config import settings
 from app.core.variables import variables
 
-from app.api.api_v1.helpers.gcp import gcp_list_projects, gcp_get_project_billing, gcp_get_project_carbon_footprint, gcp_get_account_details
+from app.api.api_v1.helpers.gcp import gcp_list_projects, gcp_get_project_billing, gcp_get_projects_billing, gcp_get_project_carbon_footprint, gcp_get_account_details
 
 
 def list_gcp_projects(
@@ -77,6 +77,27 @@ def get_gcp_project_billing (
     project_billing = json.loads(redis_c.get(redis_key))
     
     return schemas.CloudBillingResponse(**json.loads(project_billing))
+
+
+def get_gcp_projects_billing (
+    year_start: int,
+    month_start: int,
+    year_end: int,
+    month_end: int,
+    redis_c = Depends(deps.get_redis),
+) -> List[schemas.CloudBillingResponse]:
+    redis_key = variables.redis_key_for_billing_projects_by_provider(provider="gcp", year_start=year_start, month_start=month_start, year_end=year_end, month_end=month_end)
+    if redis_c.exists(redis_key) == 0:
+        gcp_project_billing = gcp_get_projects_billing(year_start=year_start, month_start=month_start, year_end=year_end, month_end=month_end)
+        data = [x.json() for x in gcp_project_billing]
+        redis_c.set(
+            redis_key,
+            json.dumps(data),
+            ex=variables.redis_ttl_for_billing,
+        )
+    project_billing = json.loads(redis_c.get(redis_key))
+
+    return [schemas.CloudBillingResponse(**json.loads(x)) for x in project_billing]
 
 
 def get_gcp_project_carbon_footprint(

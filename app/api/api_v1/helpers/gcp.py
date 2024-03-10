@@ -110,6 +110,43 @@ def gcp_get_project_billing(
     )
 
 
+def gcp_get_projects_billing(
+    year_start: int,
+    month_start: int,
+    year_end: int,
+    month_end: int,
+) -> Any:
+    bigquery_billing_query = f"""
+        SELECT
+            project.number as project_id,
+            invoice.month as invoice_month,
+            sum(cost) as total_cost,
+            SUM(IFNULL((SELECT SUM(c.amount) FROM UNNEST(credits) c), 0)) as total_credits
+        FROM `{settings.GCP_BILLING_EXPORT_PROJECT_ID}.{settings.GCP_BILLING_EXPORT_DATASET_NAME}.gcp_billing_export_v1_{settings.GCP_BILLING_ACCOUNT_ID}`
+        WHERE
+            invoice.month >= "{year_start:04d}{month_start:02d}" AND
+            invoice.month <= "{year_end:04d}{month_end:02d}"
+        GROUP BY
+            1, 2
+        ORDER BY
+            invoice_month ASC, project_id DESC;
+    """
+    client = bigquery.Client(credentials=credentials)
+    query_job = client.query(bigquery_billing_query)
+    query_results = query_job.result()
+    results = []
+    for row in query_results:
+        results.append(schemas.CloudBillingResponse(
+            project_id=row[0],
+            year=int(row[1][:4]),
+            month=int(row[1][4:]),
+            total=float("{:.2f}".format(row[2])),
+            unit="USD",
+        ))
+
+    return results
+
+
 def gcp_get_project_carbon_footprint(
     project_id: int,
     year: int,

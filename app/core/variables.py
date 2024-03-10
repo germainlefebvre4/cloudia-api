@@ -23,6 +23,9 @@ class Variables(BaseSettings):
     def redis_key_for_billing_by_provider_project(self, provider: str, project_id: str, year: int, month: int) -> str:
         return f"cloudia:billing:cloud:{provider}:project:{project_id}:billing:{year}{month}"
 
+    def redis_key_for_billing_projects_by_provider(self, provider: str, year_start: int, month_start: int, year_end: int, month_end: int) -> str:
+        return f"cloudia:billing:cloud:{provider}:projects:billing:{year_start}{month_start}:{year_end}{month_end}"
+
     def redis_key_for_carbon_footprint(self, provider: str, project_id: str, year: int, month: int) -> str:
         return f"cloudia:carbon:cloud:{provider}:project{project_id}:date:{year}{month}"
 
