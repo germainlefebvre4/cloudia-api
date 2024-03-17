@@ -54,23 +54,6 @@ def create_setting(
     return setting
 
 
-@router.put("/{id}", response_model=schemas.Setting)
-def update_setting(
-    *,
-    db: Session = Depends(deps.get_db),
-    id: int,
-    setting_in: schemas.SettingUpdate,
-) -> Any:
-    """
-    Update an setting.
-    """
-    setting = crud.setting.get(db=db, id=id)
-    if not setting:
-        raise HTTPException(status_code=404, detail="Setting not found")
-    setting = crud.setting.update(db=db, db_obj=setting, obj_in=setting_in)
-    return setting
-
-
 @router.get("/{id}", response_model=schemas.Setting)
 def read_setting(
     *,
