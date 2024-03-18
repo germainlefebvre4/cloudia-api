@@ -9,8 +9,8 @@ from app.core.config import settings
 
 class Setting(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=False)
-    key = Column(String, index=True, nullable=False)
-    value = Column(String, nullable=False)
-    type = Column(String, nullable=False)
-    category = Column(String, index=True, nullable=False)
-    description = Column(String, nullable=False)
+    path = Column(String, index=True, nullable=False)
+    key = Column(String)
+    value = Column(String)
+    type = Column(String)
+    description = Column(String)
