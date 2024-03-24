@@ -88,8 +88,36 @@ def init_db(db: Session) -> None:
     setting_6 = crud.setting.create(db, obj_in=setting_6_in)
     setting_5 = crud.setting.create(db, obj_in=setting_5_in)
 
+    # Google Cloud
+    setting_7_in = schemas.SettingCreate(
+        path="/Cloud Provider/GCP/root_project",
+        key="gcp_organization_id",
+        value="xxxxxxxxxx",
+        type="str",
+        description="GCP Organization ID",
+    )
+    setting_7 = crud.setting.create(db, obj_in=setting_7_in)
+
+    setting_8_in = schemas.SettingCreate(
+        path="/Cloud Provider/GCP/root_project",
+        key="gcp_billing_account_id",
+        value="xxxxxxxxxx",
+        type="str",
+        description="GCP Billing Account ID",
+    )
+    setting_8 = crud.setting.create(db, obj_in=setting_8_in)
+
+    setting_9_in = schemas.SettingCreate(
+        path="/Cloud Provider/GCP/billing_project",
+        key="gcp_project_id",
+        value="xxxxxxxxxx",
+        type="str",
+        description="GCP Project ID for Billing",
+    )
+    setting_9 = crud.setting.create(db, obj_in=setting_9_in)
+
     setting_6_in = schemas.SettingCreate(
-        path="/Cloud Provider/GCP/credentials/root_project",
+        path="/Cloud Provider/GCP/credentials/billing_project",
         key="gcp_service_account_json_key_file",
         value='''
 {
@@ -110,5 +138,55 @@ def init_db(db: Session) -> None:
         description="GCP Service Account JSON Key File",
     )
     setting_6 = crud.setting.create(db, obj_in=setting_6_in)
+
+    setting_10_in = schemas.SettingCreate(
+        path="/Cloud Provider/GCP/billing_project",
+        key="gcp_bigquery_dataset_name",
+        value="xxxxxxxxxx",
+        type="str",
+        description="Bigquery Dataset Name for Billing Data",
+    )
+    setting_10 = crud.setting.create(db, obj_in=setting_10_in)
+
+    setting_11_in = schemas.SettingCreate(
+        path="/Cloud Provider/GCP/carbon_footprint_project",
+        key="gcp_project_id",
+        value="xxxxxxxxxx",
+        type="str",
+        description="Project ID for Carbon Footprint",
+    )
+    setting_11 = crud.setting.create(db, obj_in=setting_11_in)
+
+    setting_13_in = schemas.SettingCreate(
+        path="/Cloud Provider/GCP/credentials/carbon_footprint_project",
+        key="gcp_service_account_json_key_file",
+        value='''
+{
+    "type": "service_account",
+    "project_id": "xxxxxxxxxx",
+    "private_key_id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nxxxxxxxxxxx\n-----END PRIVATE KEY-----\n",
+    "client_email": "xxxxxxxxxxx@xxxxxxxxxx.iam.gserviceaccount.com",
+    "client_id": "xxxxxxxxxxxxxxxxxxxxx",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/xxxxxxxxxxx%40xxxxxxxxxx.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+}
+        ''',
+        type="str",
+        description="GCP Service Account JSON Key File",
+    )
+    setting_13 = crud.setting.create(db, obj_in=setting_13_in)
+
+    setting_12_in = schemas.SettingCreate(
+        path="/Cloud Provider/GCP/carbon_footprint_project",
+        key="gcp_bigquery_dataset_name",
+        value="xxxxxxxxxx",
+        type="str",
+        description="Bigquery Dataset Name for Carbon Footprint Data",
+    )
+    setting_12 = crud.setting.create(db, obj_in=setting_12_in)
     
 
