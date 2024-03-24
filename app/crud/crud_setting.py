@@ -64,6 +64,57 @@ class CRUDSetting(CRUDBase[Setting, SettingCreate, SettingUpdate]):
             setting.value = eval(setting.type)(setting.value)
         return setting
 
+    def get_by_path(
+        self, db: Session, *,
+        path: str,
+        skip: int = 0,
+        limit: int = 100,
+    ) -> List[Setting]:
+        settings = (
+            db.query(Setting)
+            .filter(Setting.path == path)
+            .order_by(Setting.key.asc())
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+        for setting in settings:
+            if setting.type ==  "bool":
+                if setting.value == "true":
+                    setting.value = True
+                elif setting.value == "false":
+                    setting.value = False
+                else:
+                    setting.value = eval(setting.type)(setting.value)
+            else:
+                setting.value = eval(setting.type)(setting.value)
+        return settings
+
+    def get_by_path_by_key(
+        self, db: Session, *,
+        path: str,
+        key: str,
+    ) -> Setting:
+        setting = (
+            db.query(Setting)
+            .filter(Setting.path == path)
+            .filter(Setting.key == key)
+            .first()
+        )
+        if not setting:
+            return None
+        if setting.type ==  "bool":
+            if setting.value == "true":
+                setting.value = True
+            elif setting.value == "false":
+                setting.value = False
+            else:
+                setting.value = eval(setting.type)(setting.value)
+        else:
+            setting.value = eval(setting.type)(setting.value)
+        return setting
+
+
     def update_value(
         self, db: Session, *,
         db_obj: Setting,
