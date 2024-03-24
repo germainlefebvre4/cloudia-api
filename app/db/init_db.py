@@ -189,4 +189,22 @@ def init_db(db: Session) -> None:
     )
     setting_12 = crud.setting.create(db, obj_in=setting_12_in)
     
+    # Cloud Carbon Footprint
+    setting_14_in = schemas.SettingCreate(
+        path="/Cloud Carbon Footprint",
+        key="enabled",
+        value="true",
+        type="bool",
+        description='Enables Cloud Carbon Footprint',
+    )
+    setting_14 = crud.setting.create(db, obj_in=setting_14_in)
 
+    # Cloud Carbon Footprint API URL
+    setting_15_in = schemas.SettingCreate(
+        path="/Cloud Carbon Footprint",
+        key="api_url",
+        value="http://localhost:8000",
+        type="str",
+        description='Cloud Carbon Footprint API URL',
+    )
+    setting_15 = crud.setting.create(db, obj_in=setting_15_in)
