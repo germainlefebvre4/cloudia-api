@@ -7,12 +7,13 @@ from google.oauth2 import service_account
 
 from app import schemas
 from app.core.config import settings
+from app.core.settings_api import settings_api
 
 
-credentials = service_account.Credentials.from_service_account_file(settings.GCP_SERVICE_ACCOUNT_JSON_KEY_FILE)
+credentials = service_account.Credentials.from_service_account_file(settings_api.GCP_SERVICE_ACCOUNT_JSON_KEY_FILE)
 
 def get_folders(
-    parent_id = f"organizations/{settings.GCP_ORGANIZATION_ID}",
+    parent_id = f"organizations/{settings_api.GCP_ORGANIZATION_ID}",
     folders = None,
 ):
     if folders is None:
@@ -45,7 +46,7 @@ def search_projects(folder_id):
 def gcp_list_projects() -> list[schemas.CloudProject]:
     active_project = []
 
-    for projects in search_projects(f"organizations/{settings.GCP_ORGANIZATION_ID}"):
+    for projects in search_projects(f"organizations/{settings_api.GCP_ORGANIZATION_ID}"):
         data = schemas.CloudProject(
             id=projects.name.split("/")[-1],
             provider = schemas.cloud_provider.GCP().slug,
@@ -57,7 +58,7 @@ def gcp_list_projects() -> list[schemas.CloudProject]:
         )
         active_project.append(data)
 
-    for folders in get_folders(parent_id=f"organizations/{settings.GCP_ORGANIZATION_ID}", folders=None):
+    for folders in get_folders(parent_id=f"organizations/{settings_api.GCP_ORGANIZATION_ID}", folders=None):
         for projects in search_projects(folders):
             data = schemas.CloudProject(
                 id=projects.name.split("/")[1],
@@ -86,7 +87,7 @@ def gcp_get_project_billing(
             project.number as project_id,
             sum(cost) as total_cost,
             SUM(IFNULL((SELECT SUM(c.amount) FROM UNNEST(credits) c), 0)) as total_credits
-        FROM `{settings.GCP_BILLING_EXPORT_PROJECT_ID}.{settings.GCP_BILLING_EXPORT_DATASET_NAME}.gcp_billing_export_v1_{settings.GCP_BILLING_ACCOUNT_ID}`
+        FROM `{settings_api.GCP_BILLING_EXPORT_PROJECT_ID}.{settings_api.GCP_BILLING_EXPORT_DATASET_NAME}.gcp_billing_export_v1_{settings_api.GCP_BILLING_ACCOUNT_ID}`
         WHERE
             invoice.month = "{year:04d}{month:02d}" AND
             project.number = "{project_id}"
@@ -122,7 +123,7 @@ def gcp_get_projects_billing(
             invoice.month as invoice_month,
             sum(cost) as total_cost,
             SUM(IFNULL((SELECT SUM(c.amount) FROM UNNEST(credits) c), 0)) as total_credits
-        FROM `{settings.GCP_BILLING_EXPORT_PROJECT_ID}.{settings.GCP_BILLING_EXPORT_DATASET_NAME}.gcp_billing_export_v1_{settings.GCP_BILLING_ACCOUNT_ID}`
+        FROM `{settings_api.GCP_BILLING_EXPORT_PROJECT_ID}.{settings_api.GCP_BILLING_EXPORT_DATASET_NAME}.gcp_billing_export_v1_{settings_api.GCP_BILLING_ACCOUNT_ID}`
         WHERE
             invoice.month >= "{year_start:04d}{month_start:02d}" AND
             invoice.month <= "{year_end:04d}{month_end:02d}"
@@ -160,7 +161,7 @@ def gcp_get_project_carbon_footprint(
             usage_month,
             project.number,
             SUM(carbon_footprint_total_kgCO2e.location_based)
-        FROM `{settings.GCP_CARBON_EXPORT_PROJECT_ID}.{settings.GCP_CARBON_EXPORT_DATASET_NAME}.carbon_footprint`
+        FROM `{settings_api.GCP_CARBON_EXPORT_PROJECT_ID}.{settings_api.GCP_CARBON_EXPORT_DATASET_NAME}.carbon_footprint`
         WHERE
             usage_month = "{year:04d}-{month:02d}-01" AND
             project.number = "{project_id}"

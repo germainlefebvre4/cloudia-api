@@ -24,7 +24,7 @@ Setup the databases:
 
 ```bash
 docker compose up -d db redis
-docker compose restart redis
+# docker compose restart redis
 docker compose exec -ti redis redis-cli config set stop-writes-on-bgsave-error no
 ```
 

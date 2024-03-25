@@ -5,6 +5,7 @@ from dateutil.relativedelta import relativedelta
 
 from app import schemas
 from app.core.config import settings
+from app.core.settings_api import settings_api
 
 from app.api.api_v1.helpers.aws_ccft import extract_emissions_data
 
@@ -14,8 +15,8 @@ def aws_list_accounts() -> list[schemas.CloudProject]:
 
     client = boto3.client(
         'organizations',
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        aws_access_key_id=settings_api.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings_api.AWS_SECRET_ACCESS_KEY,
     )
     aws_accounts = client.list_accounts()
 
@@ -93,8 +94,8 @@ def aws_get_project_carbon_footprint(
     date_next_month = (date_tmp + relativedelta(months=1) - relativedelta(days=1)).strftime("%Y-%m-%d")
 
     session = boto3.Session(
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        aws_access_key_id=settings_api.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings_api.AWS_SECRET_ACCESS_KEY,
     )
     assumed_role_object = session.client('sts').assume_role(
         RoleArn=f"arn:aws:iam::{project_id}:role/cloudia-read-role",
@@ -131,8 +132,8 @@ def aws_get_account_details(
 ) -> schemas.CloudProject:
     client = boto3.client(
         'organizations',
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        aws_access_key_id=settings_api.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings_api.AWS_SECRET_ACCESS_KEY,
     )
     aws_account = client.describe_account(
         AccountId = str(project_id),

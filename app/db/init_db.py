@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
@@ -60,10 +62,11 @@ def init_db(db: Session) -> None:
     )
     setting_3 = crud.setting.create(db, obj_in=setting_3_in)
 
+    # Amazon Web Services
     setting_4_in = schemas.SettingCreate(
         path="/Cloud Provider/AWS/credentials/root_account",
         key="aws_root_account_access_key_id",
-        value="xxxxxxxxxxxxxxxxxxxx",
+        value=os.getenv("AWS_ACCESS_KEY_ID", "xxxxxxxxxxxxxxxxxxxx"),
         type="str",
         description="AWS root Account Programmatic Credentials: Access Key ID",
     )
@@ -72,7 +75,7 @@ def init_db(db: Session) -> None:
     setting_5_in = schemas.SettingCreate(
         path="/Cloud Provider/AWS/credentials/root_account",
         key="aws_root_account_secret_access_key",
-        value="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        value=os.getenv("AWS_SECRET_ACCESS_KEY", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
         type="str",
         description="AWS root Account Programmatic credentials: Secret Access Key",
     )
@@ -81,18 +84,17 @@ def init_db(db: Session) -> None:
     setting_6_in = schemas.SettingCreate(
         path="/Cloud Provider/AWS/credentials/root_account",
         key="aws_root_account_region",
-        value="us-east-1",
+        value=os.getenv("AWS_DEFAULT_REGION", "us-east-1"),
         type="str",
         description="AWS root Account Region",
     )
     setting_6 = crud.setting.create(db, obj_in=setting_6_in)
-    setting_5 = crud.setting.create(db, obj_in=setting_5_in)
 
     # Google Cloud
     setting_7_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/root_project",
         key="gcp_organization_id",
-        value="xxxxxxxxxx",
+        value=os.getenv("GCP_ORGANIZATION_ID", "xxxxxxxxxx"),
         type="str",
         description="GCP Organization ID",
     )
@@ -101,7 +103,7 @@ def init_db(db: Session) -> None:
     setting_8_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/root_project",
         key="gcp_billing_account_id",
-        value="xxxxxxxxxx",
+        value=os.getenv("GCP_BILLING_ACCOUNT_ID", "xxxxxxxxxx"),
         type="str",
         description="GCP Billing Account ID",
     )
@@ -110,7 +112,7 @@ def init_db(db: Session) -> None:
     setting_9_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/billing_project",
         key="gcp_project_id",
-        value="xxxxxxxxxx",
+        value=os.getenv("GCP_BILLING_EXPORT_PROJECT_ID", "xxxxxxxxxx"),
         type="str",
         description="GCP Project ID for Billing",
     )
@@ -119,21 +121,7 @@ def init_db(db: Session) -> None:
     setting_6_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/credentials/billing_project",
         key="gcp_service_account_json_key_file",
-        value='''
-{
-    "type": "service_account",
-    "project_id": "xxxxxxxxxx",
-    "private_key_id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "private_key": "-----BEGIN PRIVATE KEY-----\nxxxxxxxxxxx\n-----END PRIVATE KEY-----\n",
-    "client_email": "xxxxxxxxxxx@xxxxxxxxxx.iam.gserviceaccount.com",
-    "client_id": "xxxxxxxxxxxxxxxxxxxxx",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/xxxxxxxxxxx%40xxxxxxxxxx.iam.gserviceaccount.com",
-    "universe_domain": "googleapis.com"
-}
-        ''',
+        value=Path(os.getenv("GCP_SERVICE_ACCOUNT_JSON_KEY_FILE")).read_text(),
         type="str",
         description="GCP Service Account JSON Key File",
     )
@@ -142,7 +130,7 @@ def init_db(db: Session) -> None:
     setting_10_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/billing_project",
         key="gcp_bigquery_dataset_name",
-        value="xxxxxxxxxx",
+        value=os.getenv("GCP_BILLING_EXPORT_DATASET_NAME", "xxxxxxxxxx"),
         type="str",
         description="Bigquery Dataset Name for Billing Data",
     )
@@ -151,7 +139,7 @@ def init_db(db: Session) -> None:
     setting_11_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/carbon_footprint_project",
         key="gcp_project_id",
-        value="xxxxxxxxxx",
+        value=os.getenv("GCP_CARBON_EXPORT_PROJECT_ID", "xxxxxxxxxx"),
         type="str",
         description="Project ID for Carbon Footprint",
     )
@@ -160,21 +148,7 @@ def init_db(db: Session) -> None:
     setting_13_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/credentials/carbon_footprint_project",
         key="gcp_service_account_json_key_file",
-        value='''
-{
-    "type": "service_account",
-    "project_id": "xxxxxxxxxx",
-    "private_key_id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "private_key": "-----BEGIN PRIVATE KEY-----\nxxxxxxxxxxx\n-----END PRIVATE KEY-----\n",
-    "client_email": "xxxxxxxxxxx@xxxxxxxxxx.iam.gserviceaccount.com",
-    "client_id": "xxxxxxxxxxxxxxxxxxxxx",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/xxxxxxxxxxx%40xxxxxxxxxx.iam.gserviceaccount.com",
-    "universe_domain": "googleapis.com"
-}
-        ''',
+        value=Path(os.getenv("GCP_SERVICE_ACCOUNT_JSON_KEY_FILE")).read_text(),
         type="str",
         description="GCP Service Account JSON Key File",
     )
@@ -183,7 +157,7 @@ def init_db(db: Session) -> None:
     setting_12_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/carbon_footprint_project",
         key="gcp_bigquery_dataset_name",
-        value="xxxxxxxxxx",
+        value=os.getenv("GCP_CARBON_EXPORT_DATASET_NAME", "xxxxxxxxxx"),
         type="str",
         description="Bigquery Dataset Name for Carbon Footprint Data",
     )
@@ -203,7 +177,7 @@ def init_db(db: Session) -> None:
     setting_15_in = schemas.SettingCreate(
         path="/Cloud Carbon Footprint",
         key="api_url",
-        value="http://localhost:8000",
+        value=os.getenv("CLOUD_CARBON_FOOTPRINT_API_URL", "http://localhost:4000/api"),
         type="str",
         description='Cloud Carbon Footprint API URL',
     )
