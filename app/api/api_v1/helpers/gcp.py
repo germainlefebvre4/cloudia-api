@@ -1,6 +1,7 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from typing import Any
+import json
 
 from google.cloud import resourcemanager_v3, bigquery
 from google.oauth2 import service_account
@@ -10,7 +11,7 @@ from app.core.config import settings
 from app.core.settings_api import settings_api
 
 
-credentials = service_account.Credentials.from_service_account_file(settings_api.GCP_SERVICE_ACCOUNT_JSON_KEY_FILE)
+credentials = service_account.Credentials.from_service_account_info(json.loads(settings_api.GCP_SERVICE_ACCOUNT_JSON_KEY_FILE))
 
 def get_folders(
     parent_id = f"organizations/{settings_api.GCP_ORGANIZATION_ID}",
