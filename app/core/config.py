@@ -102,6 +102,7 @@ class Settings(BaseSettings):
     USERS_OPEN_REGISTRATION: bool = os.getenv("USERS_OPEN_REGISTRATION", False)
 
 
+    GCP_ENABLED: bool = os.getenv("GCP_ENABLED", False)
     GCP_SERVICE_ACCOUNT_JSON_KEY_FILE = os.getenv("GCP_SERVICE_ACCOUNT_JSON_KEY_FILE")
     GCP_ORGANIZATION_ID: str = os.getenv("GCP_ORGANIZATION_ID")
     GCP_BILLING_ACCOUNT_ID: str = os.getenv("GCP_BILLING_ACCOUNT_ID")
@@ -110,6 +111,7 @@ class Settings(BaseSettings):
     GCP_CARBON_EXPORT_PROJECT_ID: str = os.getenv("GCP_CARBON_EXPORT_PROJECT_ID")
     GCP_CARBON_EXPORT_DATASET_NAME: str = os.getenv("GCP_CARBON_EXPORT_DATASET_NAME")
 
+    AWS_ENABLED: bool = os.getenv("AWS_ENABLED", False)
     AWS_ACCESS_KEY_ID: str = os.getenv("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY: str = os.getenv("AWS_SECRET_ACCESS_KEY")
     AWS_DEFAULT_REGION: str = os.getenv("AWS_DEFAULT_REGION")
