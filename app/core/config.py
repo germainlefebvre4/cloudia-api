@@ -102,17 +102,22 @@ class Settings(BaseSettings):
     USERS_OPEN_REGISTRATION: bool = os.getenv("USERS_OPEN_REGISTRATION", False)
 
 
-    GCP_SERVICE_ACCOUNT_JSON_KEY_FILE = Optional[os.getenv("GCP_SERVICE_ACCOUNT_JSON_KEY_FILE")]
-    GCP_ORGANIZATION_ID: str = Optional[os.getenv("GCP_ORGANIZATION_ID")]
-    GCP_BILLING_ACCOUNT_ID: str = Optional[os.getenv("GCP_BILLING_ACCOUNT_ID")]
-    GCP_BILLING_EXPORT_PROJECT_ID: str = Optional[os.getenv("GCP_BILLING_EXPORT_PROJECT_ID")]
-    GCP_BILLING_EXPORT_DATASET_NAME: str = Optional[os.getenv("GCP_BILLING_EXPORT_DATASET_NAME")]
-    GCP_CARBON_EXPORT_PROJECT_ID: str = Optional[os.getenv("GCP_CARBON_EXPORT_PROJECT_ID")]
-    GCP_CARBON_EXPORT_DATASET_NAME: str = Optional[os.getenv("GCP_CARBON_EXPORT_DATASET_NAME")]
+    GCP_ENABLED: bool = os.getenv("GCP_ENABLED", False)
+    GCP_SERVICE_ACCOUNT_JSON_KEY_FILE: Optional[str] = os.getenv("GCP_SERVICE_ACCOUNT_JSON_KEY_FILE")
+    GCP_ORGANIZATION_ID: Optional[str] = os.getenv("GCP_ORGANIZATION_ID")
+    GCP_BILLING_ACCOUNT_ID: Optional[str] = os.getenv("GCP_BILLING_ACCOUNT_ID")
+    GCP_BILLING_EXPORT_PROJECT_ID: Optional[str] = os.getenv("GCP_BILLING_EXPORT_PROJECT_ID")
+    GCP_BILLING_EXPORT_DATASET_NAME: Optional[str] = os.getenv("GCP_BILLING_EXPORT_DATASET_NAME")
+    GCP_CARBON_EXPORT_PROJECT_ID: Optional[str] = os.getenv("GCP_CARBON_EXPORT_PROJECT_ID")
+    GCP_CARBON_EXPORT_DATASET_NAME: Optional[str] = os.getenv("GCP_CARBON_EXPORT_DATASET_NAME")
 
-    AWS_ACCESS_KEY_ID: str = Optional[os.getenv("AWS_ACCESS_KEY_ID")]
-    AWS_SECRET_ACCESS_KEY: str = Optional[os.getenv("AWS_SECRET_ACCESS_KEY")]
-    AWS_DEFAULT_REGION: str = Optional[os.getenv("AWS_DEFAULT_REGION")]
+    AWS_ENABLED: bool = os.getenv("AWS_ENABLED", False)
+    AWS_ACCESS_KEY_ID: Optional[str] = os.getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY: Optional[str] = os.getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_DEFAULT_REGION: Optional[str] = os.getenv("AWS_DEFAULT_REGION")
+
+    CCF_ENABLED: bool = os.getenv("CCF_ENABLED", False)
+    CCF_API_URL: Optional[str] = os.getenv("CCF_API_URL")
 
     class Config:
         case_sensitive = True

@@ -2,6 +2,7 @@ from typing import Any, List
 import logging
 import json
 
+from app.core.settings_api import settings_api
 from fastapi import Depends
 
 from app.api import deps
@@ -9,7 +10,8 @@ from app import schemas
 from app.core.config import settings
 from app.core.variables import variables
 
-from app.api.api_v1.helpers.gcp import gcp_list_projects, gcp_get_project_billing, gcp_get_projects_billing, gcp_get_project_carbon_footprint, gcp_get_account_details
+if settings_api.GCP_ENABLED:
+    from app.api.api_v1.helpers.gcp import gcp_list_projects, gcp_get_project_billing, gcp_get_projects_billing, gcp_get_project_carbon_footprint, gcp_get_account_details
 
 
 def list_gcp_projects(

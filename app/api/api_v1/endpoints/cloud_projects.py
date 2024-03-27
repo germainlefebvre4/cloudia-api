@@ -1,12 +1,13 @@
 from typing import Any, List
 import json
-from app.api.api_v1.technical.dummy import list_dummy_projects
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
+from app.core.settings_api import settings_api
 from app.api import deps
+from app.api.api_v1.technical.dummy import list_dummy_projects
 from app.api.api_v1.technical.aws import list_aws_projects, list_aws_project_tags, show_aws_project_details
 from app.api.api_v1.technical.gcp import list_gcp_projects, list_gcp_project_tags, show_gcp_project_details
 from app.api.api_v1.technical.cache import flush_cloud_projects_cache
@@ -23,12 +24,14 @@ async def get_providers() -> Any:
 # Cloud Projects - All
 @router.get("/providers/projects", response_model=schemas.CloudProjectsResponse)
 async def get_all_projects(
+    db = Depends(deps.get_db),
     redis_c = Depends(deps.get_redis),
 ) -> Any:
-    dummy_projects = list_dummy_projects()
-    aws_projects = list_aws_projects(redis_c)
-    gcp_projects = list_gcp_projects(redis_c)
-    projects = aws_projects + gcp_projects
+    projects = []
+    if settings_api.AWS_ENABLED:
+        projects += list_aws_projects(redis_c)
+    if settings_api.GCP_ENABLED:
+        projects += list_gcp_projects(redis_c)
     return schemas.CloudProjectsResponse(
         projects = projects,
         count = len(projects),

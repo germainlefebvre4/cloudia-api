@@ -112,6 +112,7 @@ class CRUDSetting(CRUDBase[Setting, SettingCreate, SettingUpdate]):
                 setting.value = eval(setting.type)(setting.value)
         else:
             setting.value = eval(setting.type)(setting.value)
+        # print(setting.path, setting.key, setting.value, setting.type)
         return setting
 
 

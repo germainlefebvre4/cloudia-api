@@ -47,7 +47,7 @@ def init_db(db: Session) -> None:
     setting_2_in = schemas.SettingCreate(
         path="/Cloud Provider/AWS",
         key="enabled",
-        value=os.getenv("AWS_ENABLED", "false"),
+        value="true",
         type="bool",
         description='Enables AWS Cloud Provider',
     )
@@ -56,7 +56,7 @@ def init_db(db: Session) -> None:
     setting_3_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP",
         key="enabled",
-        value=os.getenv("GCP_ENABLED", "false"),
+        value="true",
         type="bool",
         description='Enables GCP Cloud Provider',
     )
@@ -66,7 +66,7 @@ def init_db(db: Session) -> None:
     setting_4_in = schemas.SettingCreate(
         path="/Cloud Provider/AWS/credentials/root_account",
         key="aws_root_account_access_key_id",
-        value=os.getenv("AWS_ACCESS_KEY_ID", ""),
+        value=os.getenv("AWS_ACCESS_KEY_ID", "xxxxxxxxxxxxxxxxxxxx"),
         type="str",
         description="AWS root Account Programmatic Credentials: Access Key ID",
     )
@@ -75,7 +75,7 @@ def init_db(db: Session) -> None:
     setting_5_in = schemas.SettingCreate(
         path="/Cloud Provider/AWS/credentials/root_account",
         key="aws_root_account_secret_access_key",
-        value=os.getenv("AWS_SECRET_ACCESS_KEY", ""),
+        value=os.getenv("AWS_SECRET_ACCESS_KEY", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
         type="str",
         description="AWS root Account Programmatic credentials: Secret Access Key",
     )
@@ -84,7 +84,7 @@ def init_db(db: Session) -> None:
     setting_6_in = schemas.SettingCreate(
         path="/Cloud Provider/AWS/credentials/root_account",
         key="aws_root_account_region",
-        value=os.getenv("AWS_DEFAULT_REGION", ""),
+        value=os.getenv("AWS_DEFAULT_REGION", "us-east-1"),
         type="str",
         description="AWS root Account Region",
     )
@@ -94,7 +94,7 @@ def init_db(db: Session) -> None:
     setting_7_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/root_project",
         key="gcp_organization_id",
-        value=os.getenv("GCP_ORGANIZATION_ID", ""),
+        value=os.getenv("GCP_ORGANIZATION_ID", "xxxxxxxxxx"),
         type="str",
         description="GCP Organization ID",
     )
@@ -103,7 +103,7 @@ def init_db(db: Session) -> None:
     setting_8_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/root_project",
         key="gcp_billing_account_id",
-        value=os.getenv("GCP_BILLING_ACCOUNT_ID", ""),
+        value=os.getenv("GCP_BILLING_ACCOUNT_ID", "xxxxxxxxxx"),
         type="str",
         description="GCP Billing Account ID",
     )
@@ -112,36 +112,25 @@ def init_db(db: Session) -> None:
     setting_9_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/billing_project",
         key="gcp_project_id",
-        value=os.getenv("GCP_BILLING_EXPORT_PROJECT_ID", ""),
+        value=os.getenv("GCP_BILLING_EXPORT_PROJECT_ID", "xxxxxxxxxx"),
         type="str",
         description="GCP Project ID for Billing",
     )
     setting_9 = crud.setting.create(db, obj_in=setting_9_in)
 
-    if os.getenv("GCP_ENABLED"):
-        pass
-        # setting_6_in = schemas.SettingCreate(
-        #     path="/Cloud Provider/GCP/credentials/billing_project",
-        #     key="gcp_service_account_json_key_file_content",
-        #     value=Path(os.getenv("GCP_SERVICE_ACCOUNT_JSON_KEY_FILE")).read_text(),
-        #     type="str",
-        #     description="GCP Service Account JSON Key File",
-        # )
-        # setting_6 = crud.setting.create(db, obj_in=setting_6_in)
-    else:
-        setting_6_in = schemas.SettingCreate(
-            path="/Cloud Provider/GCP/credentials/billing_project",
-            key="gcp_service_account_json_key_file_content",
-            value="",
-            type="str",
-            description="GCP Service Account JSON Key File",
-        )
-        setting_6 = crud.setting.create(db, obj_in=setting_6_in)
+    setting_6_in = schemas.SettingCreate(
+        path="/Cloud Provider/GCP/credentials/billing_project",
+        key="gcp_service_account_json_key_file_content",
+        value=Path(os.getenv("GCP_SERVICE_ACCOUNT_JSON_KEY_FILE")).read_text(),
+        type="str",
+        description="GCP Service Account JSON Key File",
+    )
+    setting_6 = crud.setting.create(db, obj_in=setting_6_in)
 
     setting_10_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/billing_project",
         key="gcp_bigquery_dataset_name",
-        value=os.getenv("GCP_BILLING_EXPORT_DATASET_NAME", ""),
+        value=os.getenv("GCP_BILLING_EXPORT_DATASET_NAME", "xxxxxxxxxx"),
         type="str",
         description="Bigquery Dataset Name for Billing Data",
     )
@@ -150,57 +139,45 @@ def init_db(db: Session) -> None:
     setting_11_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/carbon_footprint_project",
         key="gcp_project_id",
-        value=os.getenv("GCP_CARBON_EXPORT_PROJECT_ID", ""),
+        value=os.getenv("GCP_CARBON_EXPORT_PROJECT_ID", "xxxxxxxxxx"),
         type="str",
         description="Project ID for Carbon Footprint",
     )
     setting_11 = crud.setting.create(db, obj_in=setting_11_in)
 
-    if os.getenv("GCP_ENABLED"):
-        pass
-        # setting_13_in = schemas.SettingCreate(
-        #     path="/Cloud Provider/GCP/credentials/carbon_footprint_project",
-        #     key="gcp_service_account_json_key_file_content",
-        #     value=Path(os.getenv("GCP_SERVICE_ACCOUNT_JSON_KEY_FILE")).read_text(),
-        #     type="str",
-        #     description="GCP Service Account JSON Key File",
-        # )
-        # setting_13 = crud.setting.create(db, obj_in=setting_13_in)
-    else:
-        setting_13_in = schemas.SettingCreate(
-            path="/Cloud Provider/GCP/credentials/carbon_footprint_project",
-            key="gcp_service_account_json_key_file_content",
-            value="",
-            type="str",
-            description="GCP Service Account JSON Key File",
-        )
-        setting_13 = crud.setting.create(db, obj_in=setting_13_in)
+    setting_13_in = schemas.SettingCreate(
+        path="/Cloud Provider/GCP/credentials/carbon_footprint_project",
+        key="gcp_service_account_json_key_file_content",
+        value=Path(os.getenv("GCP_SERVICE_ACCOUNT_JSON_KEY_FILE")).read_text(),
+        type="str",
+        description="GCP Service Account JSON Key File",
+    )
+    setting_13 = crud.setting.create(db, obj_in=setting_13_in)
 
     setting_12_in = schemas.SettingCreate(
         path="/Cloud Provider/GCP/carbon_footprint_project",
         key="gcp_bigquery_dataset_name",
-        value=os.getenv("GCP_CARBON_EXPORT_DATASET_NAME", ""),
+        value=os.getenv("GCP_CARBON_EXPORT_DATASET_NAME", "xxxxxxxxxx"),
         type="str",
         description="Bigquery Dataset Name for Carbon Footprint Data",
     )
     setting_12 = crud.setting.create(db, obj_in=setting_12_in)
     
     # Cloud Carbon Footprint
-    ## Enable
     setting_14_in = schemas.SettingCreate(
         path="/Cloud Carbon Footprint",
         key="enabled",
-        value=os.getenv("CCF_ENABLED", "false"),
+        value=os.getenv("CCF_ENABLED", "true"),
         type="bool",
         description='Enables Cloud Carbon Footprint',
     )
     setting_14 = crud.setting.create(db, obj_in=setting_14_in)
 
-    # API URL
+    # Cloud Carbon Footprint API URL
     setting_15_in = schemas.SettingCreate(
         path="/Cloud Carbon Footprint",
         key="api_url",
-        value=os.getenv("CCF_API_URL", ""),
+        value=os.getenv("CCF_API_URL", "http://localhost:4000/api"),
         type="str",
         description='Cloud Carbon Footprint API URL',
     )

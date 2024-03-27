@@ -11,7 +11,11 @@ from app.core.config import settings
 from app.core.settings_api import settings_api
 
 
-credentials = service_account.Credentials.from_service_account_info(json.loads(settings_api.GCP_SERVICE_ACCOUNT_JSON_KEY_FILE))
+if settings_api.GCP_ENABLED:
+    try:
+        credentials = service_account.Credentials.from_service_account_info(json.loads(settings_api.GCP_SERVICE_ACCOUNT_JSON_KEY_FILE_CONTENT))
+    except:
+        credentials = None
 
 def get_folders(
     parent_id = f"organizations/{settings_api.GCP_ORGANIZATION_ID}",
